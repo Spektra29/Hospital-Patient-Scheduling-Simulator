@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "../include/scheduler.h"
 
 // Simple swap helper
@@ -44,10 +45,17 @@ void copy_patients(Patient dst[], Patient src[], int n) {
 }
 
 void output_json(Patient patients[], int n) {
+    // Create a copy and sort by completion time for execution order
+    Patient* sorted = malloc(sizeof(Patient) * n);
+    for (int i = 0; i < n; i++) {
+        sorted[i] = patients[i];
+    }
+    sort_by_completion(sorted, n);
+
     printf("{\n");
     printf("  \"order\": [");
     for (int i = 0; i < n; i++) {
-        printf("\"%s\"%s", patients[i].id, i < n - 1 ? ", " : "");
+        printf("\"%s\"%s", sorted[i].id, i < n - 1 ? ", " : "");
     }
     printf("],\n");
 
@@ -72,4 +80,6 @@ void output_json(Patient patients[], int n) {
     printf("  \"avg_waiting\": %.2f,\n", total_wait / n);
     printf("  \"avg_turnaround\": %.2f\n", total_turn / n);
     printf("}\n");
+    
+    free(sorted);
 }
