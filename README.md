@@ -12,7 +12,7 @@ Efficient patient scheduling is a major challenge in healthcare due to limited s
 ### Structure of Code
 
 #### Project Report
-- Report(more detail) is also available in the documentation folder in the repository
+- Report is available to view in PDF format in the documentation folder in the repository (no download)
 [Download Project Report]([./FinalReport.docx](https://github.com/Spektra29/Hospital-Patient-Scheduling-Simulator/blob/main/documentation/FinalProject_CMPSC472.docx))
 
 **How To Run**
