@@ -39,7 +39,9 @@ int parse_input_file(const char* filename, char* algorithm, int* quantum, Patien
     // Get quantum
     char* q_ptr = strstr(text, "\"quantum\"");
     if (q_ptr) {
-        sscanf(q_ptr, "\"quantum\": %d", &quantum);
+        // `quantum` is an int* parameter; pass it directly to sscanf so the
+        // parsed integer is written into the caller-provided location.
+        sscanf(q_ptr, "\"quantum\": %d", quantum);
     }
 
     // Count patients
