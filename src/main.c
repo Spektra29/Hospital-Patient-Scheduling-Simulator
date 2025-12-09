@@ -39,7 +39,7 @@ int parse_input_file(const char* filename, char* algorithm, int* quantum, Patien
     // Get quantum
     char* q_ptr = strstr(text, "\"quantum\"");
     if (q_ptr) {
-        sscanf(q_ptr, "\"quantum\": %d", quantum);
+        sscanf(q_ptr, "\"quantum\": %d", &quantum);
     }
 
     // Count patients
@@ -64,8 +64,19 @@ int parse_input_file(const char* filename, char* algorithm, int* quantum, Patien
 
         char* brace = strstr(arr_ptr, "{");
         if (!brace) break;
-        if (sscanf(brace, "{ \"id\": \"%[^\"]\", \"arrival\": %d, \"burst\": %d, \"priority\": %d }",
-                   id, &arrival, &burst, &priority) == 4) {
+        
+        // Try to extract the values - be flexible with JSON format
+        char* id_ptr = strstr(brace, "\"id\"");
+        char* arrival_ptr = strstr(brace, "\"arrival\"");
+        char* burst_ptr = strstr(brace, "\"burst\"");
+        char* priority_ptr = strstr(brace, "\"priority\"");
+        
+        if (id_ptr && arrival_ptr && burst_ptr && priority_ptr) {
+            sscanf(id_ptr, "\"id\": \"%[^\"]\"", id);
+            sscanf(arrival_ptr, "\"arrival\": %d", &arrival);
+            sscanf(burst_ptr, "\"burst\": %d", &burst);
+            sscanf(priority_ptr, "\"priority\": %d", &priority);
+            
             strcpy(patients[i].id, id);
             patients[i].arrival = arrival;
             patients[i].burst = burst;
@@ -97,6 +108,14 @@ int main(int argc, char* argv[]) {
     if (!parse_input_file(argv[1], algorithm, &quantum, &patients, &n)) {
         printf("ERROR: Failed to parse input JSON.\n");
         return 1;
+    }
+
+    // Initialize all patients with zero values
+    for (int i = 0; i < n; i++) {
+        patients[i].completion = 0;
+        patients[i].waiting = 0;
+        patients[i].turnaround = 0;
+        patients[i].remaining_time = patients[i].burst;
     }
 
     // Run the chosen algorithm
