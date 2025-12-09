@@ -1,7 +1,7 @@
 #include <limits.h>
 #include "../include/scheduler.h"
 
-void priority_schedule(Patient p[], int n) {
+void run_priority(Patient p[], int n) {
     int completed = 0;
     int time = 0;
 

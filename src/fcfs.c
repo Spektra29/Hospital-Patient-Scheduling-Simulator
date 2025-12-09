@@ -1,6 +1,6 @@
 #include "../include/scheduler.h"
 
-void fcfs(Patient p[], int n) {
+void run_fcfs(Patient p[], int n) {
     int time = 0;
 
     for (int i = 0; i < n; i++) {

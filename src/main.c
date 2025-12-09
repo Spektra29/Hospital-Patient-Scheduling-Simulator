@@ -1,68 +1,122 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/scheduler.h"
+#include <string.h>
+#include "scheduler.h"
+#include "utils.h"
 
-int main() {
-    int n;
-    printf("Enter number of patients: ");
-    scanf("%d", &n);
-
-    Patient *patients = malloc(sizeof(Patient) * n);
-    Patient *backup = malloc(sizeof(Patient) * n);
-
-    for (int i = 0; i < n; i++) {
-        patients[i].id = i + 1;
-
-        printf("\nPatient %d arrival time: ", i + 1);
-        scanf("%d", &patients[i].arrival);
-
-        printf("Patient %d burst time: ", i + 1);
-        scanf("%d", &patients[i].burst);
-
-        printf("Patient %d priority (lower = more urgent): ", i + 1);
-        scanf("%d", &patients[i].priority);
-
-        patients[i].remaining_time = patients[i].burst;
+// Helper: Load entire file into memory
+char* load_file(const char* filename) {
+    FILE* f = fopen(filename, "r");
+    if (!f) {
+        printf("ERROR: Cannot open file: %s\n", filename);
+        exit(1);
     }
 
-    printf("\nSelect Scheduling Algorithm:\n");
-    printf("1. FCFS\n2. SJF\n3. Priority\n4. Round Robin\n");
-    int choice;
-    scanf("%d", &choice);
+    fseek(f, 0, SEEK_END);
+    long size = ftell(f);
+    rewind(f);
 
-    copy_patients(backup, patients, n);
+    char* buffer = (char*)malloc(size + 1);
+    fread(buffer, 1, size, f);
+    buffer[size] = '\0';
+    fclose(f);
 
-    switch (choice) {
-        case 1:
-            fcfs(backup, n);
-            print_results(backup, n, "FCFS Scheduling");
-            break;
+    return buffer;
+}
 
-        case 2:
-            sjf(backup, n);
-            print_results(backup, n, "SJF Scheduling");
-            break;
+// Very simple parser for the GUI-generated JSON file
+// Expects format: { "algorithm": "...", "quantum": 0, "patients": [...] }
+int parse_input_file(const char* filename, char* algorithm, int* quantum, Patient** patients_out, int* n_out) {
+    char* text = load_file(filename);
+    *quantum = 0;
+    *n_out = 0;
 
-        case 3:
-            priority_schedule(backup, n);
-            print_results(backup, n, "Priority Scheduling");
-            break;
+    // Get algorithm
+    char* alg_ptr = strstr(text, "\"algorithm\"");
+    if (!alg_ptr) { free(text); return 0; }
+    sscanf(alg_ptr, "\"algorithm\": \"%[^\"]\"", algorithm);
 
-        case 4: {
-            int q;
-            printf("Enter quantum: ");
-            scanf("%d", &q);
-            round_robin(backup, n, q);
-            print_results(backup, n, "Round Robin Scheduling");
-            break;
+    // Get quantum
+    char* q_ptr = strstr(text, "\"quantum\"");
+    if (q_ptr) {
+        sscanf(q_ptr, "\"quantum\": %d", quantum);
+    }
+
+    // Count patients
+    int count = 0;
+    char* p_ptr = strstr(text, "\"patients\"");
+    if (!p_ptr) { free(text); return 0; }
+
+    char* arr_ptr = strchr(p_ptr, '[');
+    while (arr_ptr && *arr_ptr != ']') {
+        if (strstr(arr_ptr, "{")) count++;
+        arr_ptr++;
+    }
+
+    Patient* patients = malloc(sizeof(Patient) * count);
+
+    // Parse patient entries
+    arr_ptr = strchr(p_ptr, '[');
+    int i = 0;
+    while (arr_ptr && *arr_ptr != ']' && i < count) {
+        char id[32];
+        int arrival, burst, priority;
+
+        char* brace = strstr(arr_ptr, "{");
+        if (!brace) break;
+        if (sscanf(brace, "{ \"id\": \"%[^\"]\", \"arrival\": %d, \"burst\": %d, \"priority\": %d }",
+                   id, &arrival, &burst, &priority) == 4) {
+            strcpy(patients[i].id, id);
+            patients[i].arrival = arrival;
+            patients[i].burst = burst;
+            patients[i].priority = priority;
+            patients[i].remaining_time = burst;
+            i++;
         }
-
-        default:
-            printf("Invalid choice!\n");
+        arr_ptr = brace + 1;
     }
+
+    *patients_out = patients;
+    *n_out = i;
+    free(text);
+    return 1;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        printf("Usage:\n");
+        printf("  scheduler <input.json>\n");
+        return 1;
+    }
+
+    char algorithm[32];
+    int quantum;
+    Patient* patients = NULL;
+    int n = 0;
+
+    if (!parse_input_file(argv[1], algorithm, &quantum, &patients, &n)) {
+        printf("ERROR: Failed to parse input JSON.\n");
+        return 1;
+    }
+
+    // Run the chosen algorithm
+    if (strcmp(algorithm, "FCFS") == 0) {
+        run_fcfs(patients, n);
+    } else if (strcmp(algorithm, "SJF") == 0) {
+        run_sjf(patients, n);
+    } else if (strcmp(algorithm, "Priority") == 0) {
+        run_priority(patients, n);
+    } else if (strcmp(algorithm, "Round Robin") == 0) {
+        run_round_robin(patients, n, quantum);
+    } else {
+        printf("ERROR: Unknown algorithm '%s'\n", algorithm);
+        free(patients);
+        return 1;
+    }
+
+    // Output JSON for Streamlit GUI
+    output_json(patients, n);
 
     free(patients);
-    free(backup);
-
     return 0;
 }

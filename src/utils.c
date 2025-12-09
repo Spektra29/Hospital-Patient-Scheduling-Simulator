@@ -25,8 +25,8 @@ void print_results(Patient patients[], int n, const char *title) {
     printf("\n===== %s =====\n", title);
     printf("ID\tArrival\tBurst\tPriority\tWaiting\tTurnaround\n");
     for (int i = 0; i < n; i++) {
-        printf("%d\t%d\t%d\t%d\t\t%d\t%d\n",
-               patients[i].id,
+        printf("%s\t%d\t%d\t%d\t\t%d\t%d\n",
+               patients[i].id,     // Changed %d -> %s
                patients[i].arrival,
                patients[i].burst,
                patients[i].priority,
@@ -41,4 +41,35 @@ void copy_patients(Patient dst[], Patient src[], int n) {
         dst[i] = src[i];
         dst[i].remaining_time = src[i].burst;
     }
+}
+
+void output_json(Patient patients[], int n) {
+    printf("{\n");
+    printf("  \"order\": [");
+    for (int i = 0; i < n; i++) {
+        printf("\"%s\"%s", patients[i].id, i < n - 1 ? ", " : "");
+    }
+    printf("],\n");
+
+    printf("  \"waiting_times\": {");
+    for (int i = 0; i < n; i++) {
+        printf("\"%s\": %d%s", patients[i].id, patients[i].waiting, i < n - 1 ? ", " : "");
+    }
+    printf("},\n");
+
+    printf("  \"turnaround_times\": {");
+    for (int i = 0; i < n; i++) {
+        printf("\"%s\": %d%s", patients[i].id, patients[i].turnaround, i < n - 1 ? ", " : "");
+    }
+    printf("},\n");
+
+    double total_wait = 0, total_turn = 0;
+    for (int i = 0; i < n; i++) {
+        total_wait += patients[i].waiting;
+        total_turn += patients[i].turnaround;
+    }
+
+    printf("  \"avg_waiting\": %.2f,\n", total_wait / n);
+    printf("  \"avg_turnaround\": %.2f\n", total_turn / n);
+    printf("}\n");
 }

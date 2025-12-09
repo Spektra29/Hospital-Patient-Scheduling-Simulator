@@ -1,6 +1,6 @@
 #include "../include/scheduler.h"
 
-void round_robin(Patient p[], int n, int quantum) {
+void run_round_robin(Patient p[], int n, int quantum) {
     int time = 0;
     int remaining = n;
 

@@ -1,7 +1,7 @@
 #include <limits.h>
 #include "../include/scheduler.h"
 
-void sjf(Patient p[], int n) {
+void run_sjf(Patient p[], int n) {
     int completed = 0, time = 0;
     int done[n];
 
