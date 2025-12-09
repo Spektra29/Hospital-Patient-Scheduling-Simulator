@@ -27,14 +27,19 @@ Then:
   cd gui
   python -m streamlit run app.py      
   ```
-
-
 #### Diagran
+![alt text](https://github.com/Spektra29/Hospital-Patient-Scheduling-Simulator/blob/main/images/472_diagram_smartcare.jpg) 
 
-![alt text]() 
+#### GUI Design and Results
+![alt text](https://github.com/Spektra29/Hospital-Patient-Scheduling-Simulator/blob/main/images/472_smartcare_gui.jpg) 
 
-![alt text]() 
-![alt text]()
+![alt text](https://github.com/Spektra29/Hospital-Patient-Scheduling-Simulator/blob/main/images/472_smartcare_gui_results.jpg)
+#### Demo Video
+[Watch demo]([./demo.mp4](https://github.com/Spektra29/Hospital-Patient-Scheduling-Simulator/blob/main/Healthcare_Patient_Scheduler_Demo_simulation.mp4))
 
 
 ### Conclusion
+
+This project demonstrated how operating system scheduling strategies can be applied to real healthcare challenges such as patient management and triage. By modeling patients as processes and applying FCFS, SJF, Priority Scheduling, and Round Robin, we gained insight into how scheduling decisions impact patient waiting times and resource allocation.
+We learned how important algorithm choice is for fairness and efficiency, especially in high-stakes environments like hospitals. The project helped reinforce OS concepts such as waiting time, turnaround time, preemption, and process prioritization.
+
