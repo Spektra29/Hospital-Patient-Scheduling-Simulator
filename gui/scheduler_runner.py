@@ -21,11 +21,11 @@ def run_scheduler(data):
             [EXEC_NAME, temp_input],
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=30  # increased timeout to allow longer simulations
         )
 
         if result.returncode != 0:
-            return {"error": f"Scheduler error: {result.stderr}"}
+            return {"error": f"Scheduler error: {result.stderr}", "stdout": result.stdout}
 
         # Parse JSON output from C
         try:
@@ -33,9 +33,12 @@ def run_scheduler(data):
             return output
         except json.JSONDecodeError as e:
             return {"error": f"Invalid JSON from scheduler: {str(e)}", "raw": result.stdout}
-    
+
     except FileNotFoundError:
         return {"error": f"Scheduler executable not found at: {EXEC_NAME}"}
+    except subprocess.TimeoutExpired as e:
+        # Include any partial output to help debugging
+        return {"error": f"Scheduler timed out after {e.timeout} seconds", "stdout": e.stdout, "stderr": e.stderr}
     except Exception as e:
         return {"error": f"Error running scheduler: {str(e)}"}
     finally:
