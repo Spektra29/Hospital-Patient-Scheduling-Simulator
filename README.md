@@ -7,13 +7,18 @@ SmartCare is a small simulator that applies CPU scheduling concepts to a real-wo
 - The goal of the project is to demonstrate how OS scheduling can be applied to improve medical workflow, efficiency, and fairness. 
 
 #### Significance
-
+Efficient patient scheduling is a major challenge in healthcare due to limited staff, emergencies, and unexpected arrivals. Long wait times affect safety and patient outcomes. This simulator shows how OS scheduling algorithms can be applied to hospital workflows to offer a simple model for improving patient flow. It lets users compare different algorithms, understand the tradeoffs, and explore resource allocation. Although simplified, this project highlights how computational methods can help improve fairness and efficiency in medical field.
 
 ### Structure of Code
+
+#### Project Report
+- Report is also available in the documentation folder in the repository
+[Download Project Report]([./FinalReport.docx](https://github.com/Spektra29/Hospital-Patient-Scheduling-Simulator/blob/main/documentation/FinalProject_CMPSC472.docx))
 
 **How To Run**
 - To run the project - git clone repository to directory
 - Install necessary libraries: streamlit using
+
   ```bash
   pip install streamlit
   ```
