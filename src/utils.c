@@ -20,8 +20,18 @@ void sort_by_completion(Patient patients[], int n) {
     }
 }
 
+// Sort by arrival time (FCFS)
+void sort_by_arrival(Patient patients[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (patients[j].arrival > patients[j + 1].arrival) {
+                swap(&patients[j], &patients[j + 1]);
+            }
+        }
+    }
+}
+
 void print_results(Patient patients[], int n, const char *title) {
-    sort_by_completion(patients, n);  // Sort before printing
 
     printf("\n===== %s =====\n", title);
     printf("ID\tArrival\tBurst\tPriority\tWaiting\tTurnaround\n");
