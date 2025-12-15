@@ -40,7 +40,7 @@ Then:
 
 ![alt text](https://github.com/Spektra29/Hospital-Patient-Scheduling-Simulator/blob/main/images/472_smartcare_gui_results.jpg)
 #### Demo Video
-[Watch demo]([./demo.mp4](https://github.com/Spektra29/Hospital-Patient-Scheduling-Simulator/blob/main/Healthcare_Patient_Scheduler_Demo_simulation.mp4))
+Link: https://github.com/Spektra29/Hospital-Patient-Scheduling-Simulator/blob/main/Healthcare_Patient_Scheduler_Demo_simulation.mp4 
 
 
 ### Conclusion
