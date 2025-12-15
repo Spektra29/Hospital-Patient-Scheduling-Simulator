@@ -23,6 +23,8 @@ void round_robin(Patient patients[], int n, int quantum);
 /* Utilities */
 void print_results(Patient patients[], int n, const char *title);
 void copy_patients(Patient dst[], Patient src[], int n);
+void sort_by_arrival(Patient patients[], int n);
+void sort_by_completion(Patient patients[], int n);
 
 // Add prototypes for all scheduling algorithms
 void run_fcfs(Patient* patients, int n);
