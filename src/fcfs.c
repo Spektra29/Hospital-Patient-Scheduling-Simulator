@@ -1,6 +1,8 @@
 #include "../include/scheduler.h"
 
 void run_fcfs(Patient p[], int n) {
+    sort_by_arrival(p, n);
+
     int time = 0;
 
     for (int i = 0; i < n; i++) {
