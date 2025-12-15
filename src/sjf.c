@@ -30,4 +30,6 @@ void run_sjf(Patient p[], int n) {
         done[idx] = 1;
         completed++;
     }
+    //sort by completion ONLY for display
+    sort_by_completion(p, n);
 }
